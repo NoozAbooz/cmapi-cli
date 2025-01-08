@@ -318,6 +318,25 @@ func BackupCommand(projectRoot string) bool {
 	return Success("All changes have been backed up to the server.")
 }
 
+func BuildCommand(projectRoot string) bool {
+	if !IsProsProject(projectRoot) {
+		return Fail(134)
+	}
+
+	fmt.Println(Yellow("------------------ Make Project ------------------"))
+
+	var result bool
+	result = IsCommandSuccess(projectRoot, "make", "-j")
+
+	if !result {
+		BeepFail()
+		return Fail(107)
+	}
+
+	BeepSuccess()
+	return true
+}
+
 func CompileCommand(projectRoot string, all bool, slot int) bool {
 	if !IsProsProject(projectRoot) {
 		return Fail(134)
@@ -640,6 +659,8 @@ func HandleCommand(command string, args []string) bool {
 			repoSlug = fs.Arg(0)
 		}
 		LinkLocalRepoToServerCommand(WorkingDir, repoSlug)
+	} else if command == "b" {
+		BuildCommand(WorkingDir)
 	} else if command == "normal" {
 		CompileCommand(WorkingDir, false, slotFlag)
 	} else if command == "pull" {
