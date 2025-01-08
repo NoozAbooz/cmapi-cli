@@ -327,9 +327,9 @@ func CompileCommand(projectRoot string, all bool, slot int) bool {
 
 	var result bool
 	if all {
-		result = IsCommandSuccess(projectRoot, "pros", "make", "all")
+		result = IsCommandSuccess(projectRoot, "make", "all", "-j")
 	} else {
-		result = IsCommandSuccess(projectRoot, "pros", "make")
+		result = IsCommandSuccess(projectRoot, "make", "-j")
 	}
 
 	if !result {
@@ -347,11 +347,11 @@ func CompileCommand(projectRoot string, all bool, slot int) bool {
 
 	fmt.Println(Yellow("Starting to upload"))
 
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 6; i++ {
 		if i != 0 {
-			fmt.Printf(Yellow("Upload failed, retrying... (%d/2)\n"), i)
+			fmt.Printf(Yellow("Upload failed, retrying... (%d/5)\n"), i)
 		}
-		if IsCommandSuccess(projectRoot, "pros", "upload", "--after", "run", "--slot", strconv.Itoa(slot)) {
+		if IsCommandSuccess(projectRoot, "pros", "upload", "--after", "screen", "--slot", strconv.Itoa(slot)) {
 			BeepSuccess()
 			return true
 		}
@@ -395,7 +395,7 @@ func PullCommand(projectRoot string) bool {
 		return Fail(102)
 	}
 
-	if !IsCommandSuccess(projectRoot, "git", "pull", "origin", "master") {
+	if !IsCommandSuccess(projectRoot, "git", "pull") {
 		return Fail(112)
 	}
 
